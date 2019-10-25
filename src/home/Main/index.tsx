@@ -1,9 +1,12 @@
-import React from 'react'
+import React,{Suspense,lazy} from 'react'
 import style from './style/index.module.scss'
 import { inject, observer } from 'mobx-react'
-import { NavLink, withRouter, Route, Switch, Redirect } from 'react-router-dom'
-import MyPage from'../../views/MyPage/index' 
+import { NavLink, Route, Switch, Redirect } from 'react-router-dom'
 // import Player from '../Player'
+
+const MyPage = lazy(() => import('../../views/MyPage/index'));
+const FindPage = lazy(() => import('../../views/FindPage/index'));
+const ToplistPage = lazy(() => import('../../views/ToplistPage/index'));
 
 interface MainProps{
     appStore?:any
@@ -13,11 +16,9 @@ interface MainProps{
     staticContext?:any
 }
 
-// const MyPage =          //我的页面
 
 
-const Main = withRouter(inject("appStore")(observer((props:MainProps) => {
-    console.log(props)
+const Main = inject("appStore")(observer((props:MainProps) => {
     const toggleExpand = () => {
         props.appStore.toggleExpand()
     }
@@ -34,11 +35,12 @@ const Main = withRouter(inject("appStore")(observer((props:MainProps) => {
                 <li><NavLink to={'/search'} activeClassName={style.active}>搜索</NavLink></li>
             </ul>
             <div className={style.content} style={{ bottom: playlist.length ? 60 : 0 }}>
+            <Suspense fallback={''}>
                 <Switch>
                     <Route path={'/my'} component={MyPage} />
-                    {/* <Route path={'/find'} component={FindPage} />
-                    <Route path={'/toplist'} component={TopListPage} />
-                    <Route path={`/sheet/:id`} component={SheetPage} />
+                    <Route path={'/find'} component={FindPage} />
+                    <Route path={'/toplist'} component={ToplistPage} />
+                    {/* <Route path={`/sheet/:id`} component={SheetPage} />
                     <Route path={`/search`} component={SearchPage} />
                     <Route path={`/singer/:id`} component={SingerPage} />
                     <Route path={`/album/:id`} component={AlbumPage} />
@@ -49,6 +51,7 @@ const Main = withRouter(inject("appStore")(observer((props:MainProps) => {
 
                     <Redirect exact from={'/'} to={'/find'} /> */}
                 </Switch>
+               </Suspense>
             </div>
             {/* <Player/> */}
 
@@ -56,7 +59,7 @@ const Main = withRouter(inject("appStore")(observer((props:MainProps) => {
         </div>
     )
 
-})))
+}))
 
 
 export default Main

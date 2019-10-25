@@ -2,7 +2,7 @@ const { injectBabelPlugin } = require('react-app-rewired');
 const rewireCssModules = require('react-app-rewire-css-modules');
 const path = require('path')
 
-function resolve (dir) {
+function resolve(dir) {
     return path.join(__dirname, '.', dir)
 }
 
@@ -23,12 +23,10 @@ module.exports = function override(config, env) {
         'components': resolve('src/components')
     }
 
-    config.resolve.extensions = ['.ts', '.js', '.jsx', '.json']
-
-    //scss模块化
+    //scss模块化 "react-app-rewired": "2.0.2-next.0"
     config = rewireCssModules(config, env);
 
-    
+
 
     return config;
 };

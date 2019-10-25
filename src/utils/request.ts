@@ -41,8 +41,8 @@ function ObjToURLString (param) {
 
 
 
-export async function get (url, param) {
-    const completeUrl = handleURL(url, param)
+export async function get (url, parma='') {
+    const completeUrl = handleURL(url, parma)
     const response = await axios(completeUrl)
     if (response) {
         return response.data
@@ -52,7 +52,7 @@ export async function get (url, param) {
     }
 }
 
-export async function post (url, parma) {
+export async function post (url, parma='') {
     const completeUrl = BASE_URL + url
     const response = await axios(completeUrl)
     if (response) {
