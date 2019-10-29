@@ -41,7 +41,7 @@ function ObjToURLString (param) {
 
 
 
-export async function get (url, parma='') {
+export async function get (url, parma={}) {
     const completeUrl = handleURL(url, parma)
     const response = await axios(completeUrl)
     if (response) {
@@ -52,13 +52,13 @@ export async function get (url, parma='') {
     }
 }
 
-export async function post (url, parma='') {
+export async function post (url, parma={}) {
     const completeUrl = BASE_URL + url
     const response = await axios(completeUrl)
     if (response) {
         return response.data
     } else {
-        Toast.offline(response.statusText as any || '网络错误')
+        Toast.offline(response.statusText || '网络错误')
         return response
     }
 }

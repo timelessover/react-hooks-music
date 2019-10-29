@@ -1,28 +1,33 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import BScroll from 'better-scroll'
 
 interface scrollType {
     onPullingUp?: React.FC
     children?: React.ReactNode
-
 }
 
-const Scroll = (props: any) => {
+const Scroll = (props: any, ref: any) => {
+    const wrapper = useRef()
+    let scroll: any
 
-    const wrapper = useRef() 
-
-    let scroll:any
 
     useEffect(() => {
         initScroll()
-    })
-
-    useEffect(()=>{
-        refresh()
         return () => {
             destroy()
         }
+    },[])
+
+    useEffect(() => {
+        refresh()
+        finishPullUp()
     })
+    // https://zh-hans.reactjs.org/docs/hooks-reference.html#useref
+    // 暴露子子组件方法
+    useImperativeHandle(ref, () => ({
+        finishPullUp,
+        refresh
+    }));
 
     const initScroll = () => {
         scroll = new BScroll(wrapper.current, {
@@ -30,12 +35,13 @@ const Scroll = (props: any) => {
             mouseWheel: true,
             pullUpLoad: true
         })
-        scroll.on('pullingUp',props.onPullingUp)
+        scroll.on('pullingUp', props.onPullingUp)
     }
     const refresh = () => {
         scroll && scroll.refresh()
     }
     const finishPullUp = () => {
+        console.log('3')
         scroll && scroll.finishPullUp()
     }
     const scrollToElement = (el, time, offsetX, offsetY, easing) => {
@@ -45,7 +51,8 @@ const Scroll = (props: any) => {
         scroll && scroll.scrollTo(x, y, time, easing)
     }
     const destroy = () => {
-        scroll.destroy()
+        console.log('555')
+        scroll && scroll.destroy()
         scroll = null
     }
     return (
@@ -56,4 +63,4 @@ const Scroll = (props: any) => {
 
 }
 
-export default Scroll
+export default forwardRef(Scroll)

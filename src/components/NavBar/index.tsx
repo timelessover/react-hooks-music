@@ -1,21 +1,21 @@
 import React from 'react'
 import style from './style/index.module.scss'
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
-interface NavBarProps{
-    children?:React.ReactNode
+interface NavBarProps {
+    children?: React.ReactNode
 }
 
-const NavBar = (props:any)=>{
-    const  history = useHistory();
-
-    const goBack = ()=>{
+const NavBar = (props: any) => {
+    const history = useHistory();
+    const goBack = () => {
         history.goBack()
     }
+    console.log(props)
     return (
         <div className={style.navbar}>
-            <div className={`iconfont icon-zuojiantou ${style.iconfont}`} onClick={goBack}/>
-            <div className={style.title}>{props.children}</div>
+            <div className={`iconfont icon-zuojiantou ${style.iconfont}`} onClick={goBack} />
+            <div className={style.title}>{props.children.name}</div>
         </div>
     )
 }

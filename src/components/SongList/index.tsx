@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, createRef } from 'react'
 import Scroll from '../../components/Scroll'
 import style from './style/index.module.scss'
 
-interface songListProps {
+interface SongListProps {
     list?: object[],
     bottomLoadingText?: string,
     loading?: boolean,
-    loadingMore?: ()=>{},
-    onSelectSong?: ({})=>{},
+    loadingMore?: () => void,
+    onSelectSong?: ({ }) => {},
     currentSong?: any,
 }
 
-const songList = (userProps:songListProps)=>{
+const SongList = (userProps: SongListProps) => {
     const defaultProps = {
         list: [],
         bottomLoadingText: '加载中...',   //底部loading文字
@@ -24,28 +24,48 @@ const songList = (userProps:songListProps)=>{
         ...defaultProps,
         ...userProps
     }
-    const [list,setList] = useState([])
-    const scroll = useRef(null)
 
-    console.log(scroll)
-    useEffect(()=>{
-        setList(props.list.slice())
-    },[props.list])
+    const [list, setList] = useState([])
 
-    const loadingMore = async () => {
-        await props.loadingMore()
-        // scroll && scroll.finishPullUp()
+
+    let scroll:any = useRef()
+
+    useEffect(() => {
+        setList(props.list)
+    }, [props.list])
+
+    // 本来想要切分列表，但是在子组件调用父组件拿不到props？
+
+    // const getSongs = (size = 0) => {
+    //     if (list.length >= props.list.length) {
+    //         return
+    //     }
+    //     let list1 = []
+
+    //     list1 = props.list.slice(size, size + 30)
+    //     setList(list.concat(list))
+    // }
+
+    const loadingMore = () => {
+        
+        // if (loading) {
+        //     return
+        // }
+        // const size = list.length
+        // getSongs(size)
+        scroll && scroll.current.finishPullUp()
     }
 
-    const onSelectSong = (item, index=0) => {
+
+    const onSelectSong = (item, index = 0) => {
         props.onSelectSong({
             songlist: list,
             song: item,
             index
         })
     }
-
     const { bottomLoadingText, loading, currentSong } = props
+
     return (
         <div className={style['song-list-box']}>
             <Scroll ref={scroll} onPullingUp={loadingMore}>
@@ -78,7 +98,6 @@ const songList = (userProps:songListProps)=>{
                     {
                         loading && list.length ? <div className={style.loading}>{bottomLoadingText}</div> : null
                     }
-
                 </div>
             </Scroll>
         </div>
@@ -86,4 +105,4 @@ const songList = (userProps:songListProps)=>{
 }
 
 
-export default songList
+export default SongList

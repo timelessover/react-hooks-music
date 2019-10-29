@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import style from './style/index.module.scss'
 import { useHistory } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'

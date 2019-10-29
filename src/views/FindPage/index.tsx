@@ -7,8 +7,7 @@ import Scroll from '../../components/Scroll'
 import { formatNumber } from '../../utils/util'
 import { inject,observer } from 'mobx-react'
 
-// https://www.cnblogs.com/zyl-Tara/p/7998590.html
-// 关于react中切换路由时报以上错误，实际的原因是因为在组件挂载（mounted）之后进行了异步操作，比如request请求或者设置了定时器等，而你在callback中进行了setState操作。当你切换路由时，组件已经被卸载（unmounted）了，此时异步操作中callback还在执行，因此setState没有得到值。
+
 
 const Index = (props: any) => {
     const [banners, setBanners] = useState([])
@@ -18,9 +17,7 @@ const Index = (props: any) => {
 
 
     const history = useHistory();
-    useEffect(() => {
-        initPage()
-    }, [])
+
 
     const initPage = () => {
         Promise.all([
@@ -30,6 +27,10 @@ const Index = (props: any) => {
             getHighqualitys()
         ])
     }
+    
+    useEffect(() => {
+        initPage()
+    }, [])
 
     const getBanners = async () => {
         const res = await get('/banner')
