@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Tabs } from 'antd-mobile'
 import style from './style/content.module.scss'
 import Scroll from '../../components/Scroll'
@@ -6,6 +6,8 @@ import SongList from '../../components/SongList'
 import { createMarkup } from '../../utils/util'
 import Loading from '../../components/Loading'
 import { inject, observer } from 'mobx-react'
+
+
 
 const Index = (userProps: any) => {
     const defaultProps = {
@@ -16,17 +18,46 @@ const Index = (userProps: any) => {
         ...userProps
     }
     const { info, appStore } = props
-    const { onSelectSong, playlist, currentSong } = appStore
+    const { onSelectSong, playlist, currentSong, sheetSongs, setSheetSongs } = appStore
 
-
-    const [songs, setSongs] = useState(info.tracks ? info.tracks : [])
+    const [songs, setSongs] = useState([])
     const [loading, setLoading] = useState(false)
 
-    let allList = info.tracks ? info.tracks : []
+
+    const setInfo = useCallback(() => {
+        setSongs(()=>sheetSongs? sheetSongs.slice(0, 30) : [])
+    },[sheetSongs])
+
 
     useEffect(() => {
-        setSongs(allList)
-    }, [info])
+        setInfo()
+    }, [setInfo])
+    // 本来想要切分列表，但是在子组件调用父组件拿不到props？
+
+    const getSongs = (size = 0) => {
+        const allList = sheetSongs
+        
+        if (songs.length >= allList.length) {
+            return
+        }
+        setLoading(true)
+
+        let list = []
+        //增加两秒的延迟，实际项目中可以不用，这里只是为显示这样一个加载中的过程
+        setTimeout(() => {
+            list = allList.slice(size, size + 30)
+            setSongs(songs.concat(list))
+            setLoading(false)
+        }, 2000)
+    }
+
+    const loadingMore = () => {
+        if (loading) {
+            return
+        }
+        const size = songs.length
+        getSongs(size)
+    }
 
     const tabs = [
         { title: '歌曲' },
@@ -38,7 +69,7 @@ const Index = (userProps: any) => {
         <div>
             <Tabs tabs={tabs} swipeable={false}>
                 <div style={height}>
-                    <SongList list={songs} loading={loading} onSelectSong={onSelectSong} currentSong={currentSong} />
+                    <SongList list={songs} loading={loading} loadingMore={loadingMore} onSelectSong={onSelectSong} currentSong={currentSong} />
                     <Loading loading={loading} />
                 </div>
                 <div style={height}>

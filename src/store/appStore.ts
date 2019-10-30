@@ -39,6 +39,7 @@ class AppStore {
     @observable playingLyric: string   //正在播放的歌词
     @observable playingLineNum: number   //正在播放的歌词行数
     @observable errorTimer:any
+    @observable sheetSongs:any
 
     constructor() {
         this.isExpandSider = false
@@ -57,6 +58,7 @@ class AppStore {
         this.playingLyric = ''
         this.playingLineNum = 0
         this.errorTimer = null
+        this.sheetSongs = []
 
         //当currentSong变化时作出反应
         reaction(() => this.currentSong, () => {
@@ -106,6 +108,27 @@ class AppStore {
             this[key] = value
         }
     }
+
+    @action
+    setSheetSongs = (obj) => {
+        this.sheetSongs = obj
+    }
+
+
+    // @action
+    // getSheetSongs = (size = 0) => {
+      
+    //     if(songs.length >= allList.length){
+    //         return
+    //     }
+    //     this.sheetSongs = this.sheetSongs.slice(size, size + 30)
+    //     let list = []
+    //     //增加两秒的延迟，实际项目中可以不用，这里只是为显示这样一个加载中的过程
+    //     setTimeout(()=>{
+    //         list = allList.slice(size, size + 30)
+    //         setSongs(songs.concat(list))
+    //     },2000)
+    // }
 
     /**
      * 切换侧边栏的折叠展开

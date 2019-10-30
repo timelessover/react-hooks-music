@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createRef } from 'react'
+import React, { useState, useEffect, useRef, createRef, useCallback } from 'react'
 import Scroll from '../../components/Scroll'
 import style from './style/index.module.scss'
 
@@ -6,7 +6,7 @@ interface SongListProps {
     list?: object[],
     bottomLoadingText?: string,
     loading?: boolean,
-    loadingMore?: () => void,
+    loadingMore?: any
     onSelectSong?: ({ }) => {},
     currentSong?: any,
 }
@@ -16,7 +16,7 @@ const SongList = (userProps: SongListProps) => {
         list: [],
         bottomLoadingText: '加载中...',   //底部loading文字
         loading: false,    //是否正在加载
-        loadingMore: () => { },
+        loadingMore: (song) => { },
         onSelectSong: () => { },
         currentSong: {},
     }
@@ -30,32 +30,21 @@ const SongList = (userProps: SongListProps) => {
 
     let scroll:any = useRef()
 
-    useEffect(() => {
+   
+
+    const updateList = useCallback(()=>{
         setList(props.list)
-    }, [props.list])
+    },[props.list])
+    
+    useEffect(() => {
+        updateList()
+    }, [updateList])
 
-    // 本来想要切分列表，但是在子组件调用父组件拿不到props？
 
-    // const getSongs = (size = 0) => {
-    //     if (list.length >= props.list.length) {
-    //         return
-    //     }
-    //     let list1 = []
-
-    //     list1 = props.list.slice(size, size + 30)
-    //     setList(list.concat(list))
-    // }
-
-    const loadingMore = () => {
-        
-        // if (loading) {
-        //     return
-        // }
-        // const size = list.length
-        // getSongs(size)
+    const loadingMore = async()=>{
+        await props.loadingMore()
         scroll && scroll.current.finishPullUp()
     }
-
 
     const onSelectSong = (item, index = 0) => {
         props.onSelectSong({

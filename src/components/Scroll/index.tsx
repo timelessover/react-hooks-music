@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
+import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState, useCallback } from 'react'
 import BScroll from 'better-scroll'
 
 interface scrollType {
@@ -8,20 +8,8 @@ interface scrollType {
 
 const Scroll = (props: any, ref: any) => {
     const wrapper = useRef()
-    let scroll: any
+    const [scroll,setScroll] = useState(null) 
 
-
-    useEffect(() => {
-        initScroll()
-        return () => {
-            destroy()
-        }
-    },[])
-
-    useEffect(() => {
-        refresh()
-        finishPullUp()
-    })
     // https://zh-hans.reactjs.org/docs/hooks-reference.html#useref
     // 暴露子子组件方法
     useImperativeHandle(ref, () => ({
@@ -29,19 +17,31 @@ const Scroll = (props: any, ref: any) => {
         refresh
     }));
 
-    const initScroll = () => {
-        scroll = new BScroll(wrapper.current, {
-            click: true,
-            mouseWheel: true,
-            pullUpLoad: true
-        })
-        scroll.on('pullingUp', props.onPullingUp)
-    }
     const refresh = () => {
         scroll && scroll.refresh()
     }
+
+    useEffect(() => {
+        setScroll(new BScroll(wrapper.current, {
+            click: true,
+            mouseWheel: true,
+            pullUpLoad: true
+        }))
+        
+        return () => {
+            destroy()
+        }
+    }, [])
+
+    useEffect(() => {
+        scroll && scroll.on('pullingUp', props.onPullingUp)
+        refresh()
+        return ()=>{
+            scroll && scroll.off('pullingUp', props.onPullingUp)
+        }
+    }, [refresh])
+
     const finishPullUp = () => {
-        console.log('3')
         scroll && scroll.finishPullUp()
     }
     const scrollToElement = (el, time, offsetX, offsetY, easing) => {
@@ -51,9 +51,9 @@ const Scroll = (props: any, ref: any) => {
         scroll && scroll.scrollTo(x, y, time, easing)
     }
     const destroy = () => {
-        console.log('555')
+        console.log('4')
         scroll && scroll.destroy()
-        scroll = null
+        setScroll(null)
     }
     return (
         <div style={{ height: '100%', width: '100%', overflow: 'hidden' }} ref={wrapper}>

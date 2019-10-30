@@ -11,7 +11,6 @@ const NavBar = (props: any) => {
     const goBack = () => {
         history.goBack()
     }
-    console.log(props)
     return (
         <div className={style.navbar}>
             <div className={`iconfont icon-zuojiantou ${style.iconfont}`} onClick={goBack} />

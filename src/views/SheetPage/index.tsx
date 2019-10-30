@@ -5,10 +5,13 @@ import {get} from '../../utils/request'
 import NavBar from '../../components/NavBar'
 import HeaderInfo from '../../components/HeaderInfo'
 import Content from './Content'
+import {inject,observer} from 'mobx-react'
 
 const Index = (props:any)=>{
     const [detail,setDetail] = useState({name:'',coverImgUrl:''})
     const [loading,setLoading] = useState(false)
+    const { setSheetSongs } = props.appStore
+
     const { id } = useParams()
 
     useEffect(()=>{
@@ -18,10 +21,10 @@ const Index = (props:any)=>{
     const getDetail = async (id)=>{
         setLoading(true)
         const res = await get(`/playlist/detail?id=${id}`)
+        setSheetSongs(res.playlist.tracks || [])
         setDetail(res.playlist || {})
         setLoading(false)
     }
-
 
     return (
         <div className={style.container}>
@@ -34,4 +37,4 @@ const Index = (props:any)=>{
     )
 } 
 
-export default Index
+export default inject('appStore')(observer(Index)) 

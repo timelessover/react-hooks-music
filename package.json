@@ -42,6 +42,7 @@
     "better-scroll": "^1.15.2",
     "customize-cra": "^0.8.0",
     "dayjs": "^1.8.16",
+    "eslint-plugin-react-hooks": "^2.2.0",
     "lyric-parser": "^1.0.1",
     "mobx": "^5.14.2",
     "mobx-react": "^6.1.4",
@@ -50,6 +51,7 @@
     "react-app-rewire-css-modules": "^1.0.0",
     "react-app-rewired": "2.0.2-next.0",
     "react-router-dom": "^5.1.2",
+    "react-transition-group": "^4.3.0",
     "sass-loader": "^8.0.0",
     "video-react": "^0.14.1"
   }
